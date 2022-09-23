@@ -15,7 +15,7 @@ var points = [
     # Last character
     utf32.CodePoint(0x10ffff)
 ]
-assert(utf8.encode(points) == [
+var bytes = [
     0x00,
 
     0x30,
@@ -35,13 +35,18 @@ assert(utf8.encode(points) == [
     0x8f,
     0xbf,
     0xbf
-])
+]
 
-points = [0x10ffff + 1]
+# encode
+assert(utf8.encode(points) == bytes)
+
 var haserror = false
 try
-    utf8.encode(points)
+    utf8.encode([0x10ffff + 1])
 except ..
     haserror = true
 end
 assert(haserror)
+
+# decode
+assert(utf8.decode("0a星🌕") == points[1..-2])

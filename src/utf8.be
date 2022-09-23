@@ -1,3 +1,6 @@
+import string as s
+import utf32 as u
+
 m = module()
 
 def encode(points)
@@ -27,5 +30,47 @@ def encode(points)
     return result
 end
 m.encode = encode
+
+def decode(str)
+    var i = 0
+    var points = []
+    while i < size(str)
+        var c = s.byte(str[i])
+        var l = 0
+        if c <= 0x7f
+        elif (c & 0xe0) == 0xc0
+            c &= 0x1f
+            l = 1
+        elif (c & 0xf0) == 0xe0
+            c &= 0xf
+            l = 2
+        elif (c & 0xf8) == 0xf0
+            c &= 0x7
+            l = 3
+        else
+            raise 'Invalid character'
+        end
+
+        if l <= 0
+            points.push(u.CodePoint(c))
+            i += 1
+            continue
+        end
+
+        for j : 1..l
+            c <<= 6
+            nc = s.byte(str[i + j])
+            c |= nc & 0x3f
+        end
+
+        if c > 0x10ffff
+            raise 'Invalid character'
+        end
+        points.push(u.CodePoint(c))
+        i += l + 1
+    end
+    return points
+end
+m.decode = decode
 
 return m
