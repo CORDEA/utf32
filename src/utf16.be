@@ -20,4 +20,28 @@ def encode(points)
 end
 m.encode = encode
 
+def decode(chars)
+    var i = 0
+    var points = []
+    while i < size(chars)
+        var c = chars[i]
+        var l = 0
+        if c >= 0x10000
+            raise 'Invalid character'
+        end
+
+        if c < 0xd800 || c > 0xdfff
+            points.push(utf32.CodePoint(c))
+            i += 1
+            continue
+        end
+        var nc = chars[i+1]
+        var p = 0x10000 + (c - 0xd800 << 10) + nc - 0xdc00
+        points.push(utf32.CodePoint(p))
+        i += 2
+    end
+    return points
+end
+m.decode = decode
+
 return m

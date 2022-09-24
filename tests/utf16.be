@@ -15,7 +15,7 @@ var points = [
     # Last character
     utf32.CodePoint(0x10ffff)
 ]
-var bytes = [
+var chars = [
     0x00,
 
     0x30,
@@ -32,11 +32,22 @@ var bytes = [
 ]
 
 # encode
-assert(utf16.encode(points) == bytes)
+assert(utf16.encode(points) == chars)
 
 var haserror = false
 try
     utf16.encode([utf32.CodePoint(0x10ffff + 1)])
+except ..
+    haserror = true
+end
+assert(haserror)
+
+# decode
+assert(utf16.decode(chars) == points)
+
+var haserror = false
+try
+    utf16.decode([0xffff + 1])
 except ..
     haserror = true
 end
