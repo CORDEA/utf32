@@ -1,3 +1,5 @@
+import utf32 as u
+
 m = module()
 
 def encode(points)
@@ -31,13 +33,13 @@ def decode(chars)
         end
 
         if c < 0xd800 || c > 0xdfff
-            points.push(utf32.CodePoint(c))
+            points.push(u.CodePoint(c))
             i += 1
             continue
         end
         var nc = chars[i+1]
         var p = 0x10000 + (c - 0xd800 << 10) + nc - 0xdc00
-        points.push(utf32.CodePoint(p))
+        points.push(u.CodePoint(p))
         i += 2
     end
     return points
