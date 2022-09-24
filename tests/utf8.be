@@ -42,7 +42,7 @@ assert(utf8.encode(points) == bytes)
 
 var haserror = false
 try
-    utf8.encode([0x10ffff + 1])
+    utf8.encode([utf32.CodePoint(0x10ffff + 1)])
 except ..
     haserror = true
 end
